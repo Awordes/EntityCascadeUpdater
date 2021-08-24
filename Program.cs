@@ -14,9 +14,18 @@ namespace EntityCascadeUpdater
             public int SomeField { get; set; }
 
             public Bar Bar { get; set; }
+            
+            public Baz Baz { get; set; }
         }
 
         public class Bar: IDependsOn<Foo>
+        {
+            public int SomeField { get; set; }
+
+            public Baz Baz { get; set; }
+        }
+
+        public class Baz : IDependsOn<Foo>
         {
             public int SomeField { get; set; }
         }
@@ -94,12 +103,31 @@ namespace EntityCascadeUpdater
                 SomeField = 1,
                 Bar = new Bar
                 {
+                    SomeField = 1,
+                    Baz = new Baz
+                    {
+                        SomeField = 1
+                    }
+                },
+                Baz = new Baz
+                {
                     SomeField = 1
                 }
             };
             
-            foo.CascadeUpdate(x => x.SomeField, 2);
+            Console.WriteLine("Default values:");
+            Console.WriteLine($"foo.SomeField = {foo.SomeField}");
             Console.WriteLine($"foo.Bar.SomeField = {foo.Bar.SomeField}");
+            Console.WriteLine($"foo.Baz.SomeField = {foo.Baz.SomeField}");
+            Console.WriteLine($"foo.Bar.Baz.SomeField = {foo.Bar.Baz.SomeField}");
+            Console.WriteLine("=============================");
+            
+            foo.CascadeUpdate(x => x.SomeField, 2);
+            Console.WriteLine("Cascade change default value:");
+            Console.WriteLine($"foo.SomeField = {foo.SomeField}");
+            Console.WriteLine($"foo.Bar.SomeField = {foo.Bar.SomeField}");
+            Console.WriteLine($"foo.Baz.SomeField = {foo.Baz.SomeField}");
+            Console.WriteLine($"foo.Bar.Baz.SomeField = {foo.Bar.Baz.SomeField}");
         }
     }
 }
